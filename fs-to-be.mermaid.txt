@@ -1,0 +1,23 @@
+sequenceDiagram
+    participant DynamoDB
+    participant FileStreamConsole
+    participant S3
+    participant HHFS
+    participant LegacySystem
+
+    title TO-BE State
+
+    activate FileStreamConsole
+    FileStreamConsole->>DynamoDB: Retrieve Metadata
+    DynamoDB-->>FileStreamConsole: Metadata
+    FileStreamConsole->>S3: Retrieve File
+    alt File Exists
+        S3-->>FileStreamConsole: File
+    else File Missing
+        S3-->>FileStreamConsole: File Not Found
+        FileStreamConsole->>LegacySystem: Retrieve Missing File
+        LegacySystem-->>FileStreamConsole: Missing File
+        FileStreamConsole->>S3: Upload File
+        S3-->>FileStreamConsole: File Uploaded
+    end
+    deactivate FileStreamConsole

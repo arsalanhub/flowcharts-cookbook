@@ -1,0 +1,23 @@
+sequenceDiagram
+    participant DynamoDB
+    participant FileStreamConsole
+    participant S3
+    participant HHFS
+    participant LegacySystem
+
+    title AS-IS State
+
+    activate FileStreamConsole
+    FileStreamConsole->>DynamoDB: Retrieve Metadata
+    DynamoDB-->>FileStreamConsole: Metadata
+    FileStreamConsole->>S3: Retrieve File
+    alt File Exists
+        S3-->>FileStreamConsole: File
+        FileStreamConsole->>HHFS: Synchronize Data
+        FileStreamConsole->>LegacySystem: Synchronize Data
+    else File Missing
+        S3-->>FileStreamConsole: File Not Found
+        FileStreamConsole-->>FileStreamConsole: Fail
+        FileStreamConsole-->>FileStreamConsole: Stop Synchronization
+    end
+    deactivate FileStreamConsole
