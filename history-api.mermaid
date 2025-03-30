@@ -1,0 +1,22 @@
+graph TD;
+    
+    subgraph "History API"
+        A[Client Request] -->|API Call| B[History Service]
+    end
+
+    subgraph "Data Sources"
+        SQLDB[(SQL Database)]
+        CassandraDB[(Cassandra)]
+        OpenSearchDB[(OpenSearch)]
+    end
+
+    B -->|Query| SQLDB
+    B -->|Query| CassandraDB
+    B -->|Query| OpenSearchDB
+
+    SQLDB -->|Response| B
+    CassandraDB -->|Response| B
+    OpenSearchDB -->|Response| B
+
+    B -->|Consolidated Response| C[Return Data to Client]
+
