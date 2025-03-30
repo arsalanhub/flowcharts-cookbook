@@ -1,0 +1,24 @@
+---
+config:
+  look: classic
+---
+graph TD;
+    subgraph "AWS EMR Cluster"
+        M[Master Node] -->|Manages Cluster| C1[Core Node 1]
+        M --> C2[Core Node 2]
+        M --> T1[Task Node 1]
+        M --> T2[Task Node 2]
+        subgraph "Core Nodes"
+            C1 -->|Stores HDFS Data| HDFS1[HDFS Block 1]
+            C2 -->|Stores HDFS Data| HDFS2[HDFS Block 2]
+        end
+        subgraph "Task Nodes"
+            T1 -->|Runs Compute Jobs| PySpark1[PySpark Task 1]
+            T2 -->|Runs Compute Jobs| PySpark2[PySpark Task 2]
+        end
+    end
+    U[User Submits PySpark Job] -->|Triggers Execution| M
+    PySpark1 -->|Processes Data| OS[Writes to OpenSearch]
+    PySpark2 -->|Processes Data| OS
+    C1 -->|Processes Data| OS
+    C2 -->|Processes Data| OS
