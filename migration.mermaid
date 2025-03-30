@@ -1,0 +1,9 @@
+graph TD;
+
+    A[Source: Cassandra] -->|Extract Data| B[PySpark Job on AWS EMR]
+    B -->|Transform & Process Data| C[Intermediate DataFrame]
+    C -->|Load Data| D[Target: OpenSearch]
+
+    subgraph EMR_Cluster [AWS EMR Cluster]
+        B
+    end
